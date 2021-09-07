@@ -13,7 +13,7 @@ JNIEXPORT jobject JNICALL Java_Animals_createAnimal
     jobject object;
     jmethodID constructor;
 
-    cls = (*env)->FindClass(env, "Animals$Dog");
+    cls = (*env)->FindClass(env, "Dog");
     constructor = (*env)->GetMethodID(env, cls, "<init>", "()V");
     object = (*env)->NewObject(env, cls, constructor);
     return object;

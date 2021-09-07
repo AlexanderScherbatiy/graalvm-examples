@@ -3,28 +3,6 @@ public class Animals {
         System.loadLibrary("Animals");
     }
 
-    interface Animal {
-        String sound();
-    }
-
-    public static class Cat implements Animal {
-        public String sound() {
-            return "meow!";
-        }
-    }
-
-    public static class Dog implements Animal {
-        public String sound() {
-            return "bark!";
-        }
-    }
-
-    public static class MyDog implements Animal {
-        public String sound() {
-            return "my bark!";
-        }
-    }
-
     public static void main(String[] args) {
         System.out.printf("Animals sample!%n");
 
