@@ -8,20 +8,20 @@ if [ -z "$APP" ]; then
   exit -1
 fi
 
-OUT=classes
+if [ -z "$OUT" ]; then
+  OUT=./classes
+  rm -rf ./$OUT *.png
+fi
 
 if [ "x$USE_JNI" == "xtrue" ]; then
   HEADERS="-h ./$OUT"
   JAVA_LIB_PATH="-Djava.library.path=./$OUT"
 fi
 
-rm -rf $OUT *.png
-
 $GRAALVM/bin/javac $HEADERS -d ./$OUT ./*.java
 
 if [ "x$USE_JNI" == "xtrue" ]; then
-  gcc -g -shared -fPIC -I${GRAALVM}/include -I${GRAALVM}/include/linux -I./classes $APP.c -o classes/lib$APP.so
+  gcc -g -shared -fPIC -I${GRAALVM}/include -I${GRAALVM}/include/linux -I./$OUT $APP.c -o ./$OUT/lib$APP.so
 fi
 
-$GRAALVM/bin/java -classpath $OUT $JAVA_LIB_PATH $OPTS $APP
-
+$GRAALVM/bin/native-image -classpath $OUT $JAVA_LIB_PATH $OPTS $APP
