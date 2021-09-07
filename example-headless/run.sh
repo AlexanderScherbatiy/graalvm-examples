@@ -1,13 +1,7 @@
-set -e
-set -x
+ROOTDIR=$(dirname "$0")/..
 
-# Set GRAALVM enviroment variable
+export APP=GenerateImage
+export OPTS="-Djava.awt.headless=false"
 
-OUT=classes
-
-rm -rf $OUT *.png
-mkdir $OUT
-
-$GRAALVM/bin/javac -d ./$OUT ./*.java
-$GRAALVM/bin/java -classpath $OUT -Djava.awt.headless=false GenerateImage
+$ROOTDIR/run.sh
 
