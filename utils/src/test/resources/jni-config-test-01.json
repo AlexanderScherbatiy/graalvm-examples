@@ -1,0 +1,12 @@
+[
+{
+  "name":"sun.awt.SunToolkit",
+  "methods":[
+    {"name":"awtLock","parameterTypes":[] },
+    {"name":"awtLockNotify","parameterTypes":[] },
+    {"name":"awtLockNotifyAll","parameterTypes":[] },
+    {"name":"awtLockWait","parameterTypes":["long"] },
+    {"name":"awtUnlock","parameterTypes":[] }
+  ]
+}
+]
