@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         if (args.length == 0) {
-            System.out.printf("Provide arguments: GenerateJNIRuntimeAccess file.json");
+            System.out.printf("Provide arguments: GenerateJNIRuntimeAccess file.json%n");
             System.exit(0);
         }
 
@@ -32,7 +32,7 @@ public class Main {
         List<GenerateJNIRuntimeAccess.JNIClass> jniClasses = GenerateJNIRuntimeAccess.parse(file);
 
         for (GenerateJNIRuntimeAccess.JNIClass jniClass : jniClasses) {
-            dump("JNIRuntimeAccess.register(%s.class);", jniClass.getName());
+            dump("JNIRuntimeAccess.register(%s.class);", normalizeClassName(jniClass.getName()));
             if (jniClass.getFields() != null) {
                 String fields = jniClass.getFields()
                         .stream()
@@ -47,19 +47,29 @@ public class Main {
                     if (jniMethod.getParameterTypes().size() > 0) {
                         parameterTypes = jniMethod.getParameterTypes()
                                 .stream()
-                                .map(type -> String.format("%s.class", type))
+                                .map(type -> String.format("%s.class", normalizeClassName(type)))
                                 .collect(Collectors.joining(", "));
                     }
 
                     if (!parameterTypes.isEmpty()) {
                         parameterTypes = ", " + parameterTypes;
                     }
-                    dump("JNIRuntimeAccess.register(method(access, \"%s\", \"%s\"%s));",
-                            jniClass.getName(), jniMethod.name, parameterTypes);
+
+                    if (jniMethod.getName().equals("<init>")) {
+                        dump("JNIRuntimeAccess.register(constructor(access, \"%s\"%s));",
+                                jniClass.getName(), parameterTypes);
+                    } else {
+                        dump("JNIRuntimeAccess.register(method(access, \"%s\", \"%s\"%s));",
+                                jniClass.getName(), jniMethod.getName(), parameterTypes);
+                    }
                 }
             }
             dump("");
         }
+    }
+
+    private static String normalizeClassName(String className) {
+        return className.replace('$', '.');
     }
 
     private static void checkArgument(String[] args, int index, String errorMessage) throws Exception {

@@ -65,7 +65,7 @@ public class GenerateJNIRuntimeAccess {
 
     public static class JNIClassMethod {
 
-        public String name;
+        private String name;
         private List<String> parameterTypes;
 
         public String getName() {
