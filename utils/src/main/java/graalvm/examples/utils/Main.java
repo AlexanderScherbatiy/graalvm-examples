@@ -18,8 +18,12 @@ public class Main {
             case "GenerateJNIRuntimeAccess":
                 checkArgument(args, 1, "JSON file is not provided" +
                         " as the second argument");
-                String file = args[1];
-                generateRuntimeAccess(file);
+                generateRuntimeAccess(args[1]);
+                break;
+            case "UIClassIDConverter":
+                checkArgument(args, 1, "File with component UIs is not" +
+                        " provided as the second argument");
+                UIClassIDConverter.convertUIClassID(args[1]);
                 break;
             default:
                 String msg = String.format("Command '%s' not found!", command);
