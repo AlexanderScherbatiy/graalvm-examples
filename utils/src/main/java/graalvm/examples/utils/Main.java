@@ -25,6 +25,11 @@ public class Main {
                         " provided as the second argument");
                 UIClassIDConverter.convertUIClassID(args[1]);
                 break;
+            case "FindCommonLines":
+                checkArgument(args, 2, "Two files are not provided" +
+                        " as the second argument");
+                FindCommonLines.findCommonLines(args[1], args[2]);
+                break;
             default:
                 String msg = String.format("Command '%s' not found!", command);
                 throw new Exception(msg);
