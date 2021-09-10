@@ -1,6 +1,5 @@
 package graalvm.examples.utils;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,6 +7,8 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 public class UIClassIDConverter {
+
+    private static final String COMP_UI_PACKAGE = System.getProperty("CompUIPackage", "");
 
     public static void convertUIClassID(String fileName) throws IOException {
         convertUIClassID(Paths.get(fileName));
@@ -37,6 +38,6 @@ public class UIClassIDConverter {
     }
 
     private static void printLine(String uiID, String compUI) {
-        System.out.printf("    case %s : return %s.createUI(comp);%n", uiID, compUI);
+        System.out.printf("    case \"%s.%s\" : return %s.%s.createUI(comp);%n", COMP_UI_PACKAGE, compUI, COMP_UI_PACKAGE, compUI);
     }
 }
