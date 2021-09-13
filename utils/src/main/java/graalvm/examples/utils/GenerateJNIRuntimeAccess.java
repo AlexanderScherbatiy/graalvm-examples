@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GenerateJNIRuntimeAccess {
 
@@ -17,6 +18,56 @@ public class GenerateJNIRuntimeAccess {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(file, new TypeReference<List<JNIClass>>() {
         });
+    }
+
+    public static void generateRuntimeAccess(String file) throws Exception {
+
+        List<GenerateJNIRuntimeAccess.JNIClass> jniClasses = GenerateJNIRuntimeAccess.parse(file);
+
+        for (GenerateJNIRuntimeAccess.JNIClass jniClass : jniClasses) {
+            dump("JNIRuntimeAccess.register(%s.class);", normalizeClassName(jniClass.getName()));
+            if (jniClass.getFields() != null) {
+                String fields = jniClass.getFields()
+                        .stream()
+                        .map(field -> String.format("\"%s\"", field.getName()))
+                        .collect(Collectors.joining(", "));
+                dump("JNIRuntimeAccess.register(fields(access, \"%s\", %s));", jniClass.getName(), fields);
+            }
+
+            if (jniClass.getMethods() != null) {
+                for (GenerateJNIRuntimeAccess.JNIClassMethod jniMethod : jniClass.getMethods()) {
+                    String parameterTypes = "";
+                    if (jniMethod.getParameterTypes().size() > 0) {
+                        parameterTypes = jniMethod.getParameterTypes()
+                                .stream()
+                                .map(type -> String.format("%s.class", normalizeClassName(type)))
+                                .collect(Collectors.joining(", "));
+                    }
+
+                    if (!parameterTypes.isEmpty()) {
+                        parameterTypes = ", " + parameterTypes;
+                    }
+
+                    if (jniMethod.getName().equals("<init>")) {
+                        dump("JNIRuntimeAccess.register(constructor(access, \"%s\"%s));",
+                                jniClass.getName(), parameterTypes);
+                    } else {
+                        dump("JNIRuntimeAccess.register(method(access, \"%s\", \"%s\"%s));",
+                                jniClass.getName(), jniMethod.getName(), parameterTypes);
+                    }
+                }
+            }
+            dump("");
+        }
+    }
+
+    private static String normalizeClassName(String className) {
+        return className.replace('$', '.');
+    }
+
+    private static void dump(String format, Object... args) {
+        System.out.printf(format, args);
+        System.out.println();
     }
 
     public static class JNIClass {
