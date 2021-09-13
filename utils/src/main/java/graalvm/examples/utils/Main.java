@@ -26,7 +26,7 @@ public class Main {
             case "UIClassIDConverter":
                 checkArgument(args, 1, "File with component UIs is not" +
                         " provided as the second argument");
-                UIClassIDConverter.convertUIClassID(args[1]);
+                new UIClassIDConverter().convertUIClassID(args[1]);
                 break;
             case "FindCommonLines":
                 checkArgument(args, 2, "Two files are not provided" +
