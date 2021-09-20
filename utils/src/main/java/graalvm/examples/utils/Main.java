@@ -1,8 +1,5 @@
 package graalvm.examples.utils;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class Main {
 
     private static final String[] COMMANDS = {
