@@ -5,6 +5,13 @@
 Set `GRAALVM` environment variable which points to GraalVM
 installation directory.
 
+## Demos
+### Notepad
+`$GRAALMV/bin/native-image -Djava.awt.headless=false -H:IncludeResources='.*/Notepad.*properties$' -H:IncludeResources='.*/.*gif$' -jar Notepad.jar`
+
+### Stylepad
+`$GRAALMV/bin/native-image -Djava.awt.headless=false -H:IncludeResources='.*/(Notepad|Stylepad).*properties$' -H:IncludeResources='.*/.*gif$' -H:SerializationConfigurationFiles=serialization-config.json -jar Stylepad.jar`
+
 ## Options
 
 ### Include Resources
