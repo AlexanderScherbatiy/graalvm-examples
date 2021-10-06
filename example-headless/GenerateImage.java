@@ -1,5 +1,4 @@
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -16,7 +15,7 @@ public class GenerateImage {
             g.dispose();
 
             File file = new File("hello.png");
-            System.out.printf("image to file: %s%n", file);
+            System.out.printf("Save image to file: %s%n", file);
 
             ImageIO.write(buff, "png", file);
     }
