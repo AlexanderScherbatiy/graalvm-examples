@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GenerateJNIRuntimeAccess {
@@ -25,7 +26,7 @@ public class GenerateJNIRuntimeAccess {
         List<GenerateJNIRuntimeAccess.JNIClass> jniClasses = GenerateJNIRuntimeAccess.parse(file);
 
         for (GenerateJNIRuntimeAccess.JNIClass jniClass : jniClasses) {
-            dump("JNIRuntimeAccess.register(%s.class);", normalizeClassName(jniClass.getName()));
+            dump("JNIRuntimeAccess.register(%s);", convertClassName(jniClass.getName()));
             if (jniClass.getFields() != null) {
                 String fields = jniClass.getFields()
                         .stream()
@@ -40,7 +41,7 @@ public class GenerateJNIRuntimeAccess {
                     if (jniMethod.getParameterTypes().size() > 0) {
                         parameterTypes = jniMethod.getParameterTypes()
                                 .stream()
-                                .map(type -> String.format("%s.class", normalizeClassName(type)))
+                                .map(type -> convertClassName(type))
                                 .collect(Collectors.joining(", "));
                     }
 
@@ -62,8 +63,27 @@ public class GenerateJNIRuntimeAccess {
     }
 
     private static String normalizeClassName(String className) {
-        return className.replace('$', '.');
+        String name = className;
+        if (name.startsWith("[L")) {
+            name = name.substring(2, name.length() - 1);
+        }
+        return name;
     }
+
+    private static final Set<String> PRIMITIVE_TYPES = Set.of(
+            "int", "long", "double", "float", "char", "byte", "boolean",
+            "int[]", "long[]", "double[]",  "float[]", "char[]", "byte[]", "boolean[]");
+
+    private static String convertClassName(String className) {
+        String normalizedClassName = normalizeClassName(className);
+        if (normalizedClassName.startsWith("java.") || PRIMITIVE_TYPES.contains(className)) {
+            normalizedClassName = normalizedClassName.replace('$', '.');
+            return String.format("%s.class", normalizedClassName);
+        }
+
+        return String.format("clazz(access, \"%s\")", normalizedClassName);
+    }
+
 
     private static void dump(String format, Object... args) {
         System.out.printf(format, args);
