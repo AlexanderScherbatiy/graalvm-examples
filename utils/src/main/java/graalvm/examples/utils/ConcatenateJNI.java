@@ -10,7 +10,8 @@ import java.util.stream.Stream;
 
 public class ConcatenateJNI {
 
-    private static final String PATTERN = "JNIRuntimeAccess.register";
+    private static final String REGISTER_PREFIX =
+        System.getProperty("generate.register.class", "JNIRuntimeAccess");
 
     public static void main(String[] args) throws Exception {
 
@@ -66,7 +67,7 @@ public class ConcatenateJNI {
             line = line.trim();
 
             if (!parsed) {
-                if (line.startsWith(PATTERN)) {
+                if (line.startsWith(REGISTER_PREFIX + ".register")) {
                     if (line.endsWith(",")) {
                         parsed = true;
                         builder.setLength(0);

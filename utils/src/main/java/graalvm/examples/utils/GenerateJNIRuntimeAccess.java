@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 
 public class GenerateJNIRuntimeAccess {
 
+    private static final String REGISTER_PREFIX =
+            System.getProperty("generate.register.class", "JNIRuntimeAccess");
+
     public static List<JNIClass> parse(String file) throws IOException {
         return parse(new File(file));
     }
@@ -24,15 +27,15 @@ public class GenerateJNIRuntimeAccess {
     public static void generateRuntimeAccess(String file) throws Exception {
 
         List<GenerateJNIRuntimeAccess.JNIClass> jniClasses = GenerateJNIRuntimeAccess.parse(file);
-
+        String prefix = REGISTER_PREFIX;
         for (GenerateJNIRuntimeAccess.JNIClass jniClass : jniClasses) {
-            dump("JNIRuntimeAccess.register(%s);", convertClassName(jniClass.getName()));
+            dump("%s.register(%s);", prefix, convertClassName(jniClass.getName()));
             if (jniClass.getFields() != null) {
                 String fields = jniClass.getFields()
                         .stream()
                         .map(field -> String.format("\"%s\"", field.getName()))
                         .collect(Collectors.joining(", "));
-                dump("JNIRuntimeAccess.register(fields(access, \"%s\", %s));", jniClass.getName(), fields);
+                dump("%s.register(fields(access, \"%s\", %s));", prefix, jniClass.getName(), fields);
             }
 
             if (jniClass.getMethods() != null) {
@@ -50,11 +53,11 @@ public class GenerateJNIRuntimeAccess {
                     }
 
                     if (jniMethod.getName().equals("<init>")) {
-                        dump("JNIRuntimeAccess.register(constructor(access, \"%s\"%s));",
-                                jniClass.getName(), parameterTypes);
+                        dump("%s.register(constructor(access, \"%s\"%s));",
+                                prefix, jniClass.getName(), parameterTypes);
                     } else {
-                        dump("JNIRuntimeAccess.register(method(access, \"%s\", \"%s\"%s));",
-                                jniClass.getName(), jniMethod.getName(), parameterTypes);
+                        dump("%s.register(method(access, \"%s\", \"%s\"%s));",
+                                prefix, jniClass.getName(), jniMethod.getName(), parameterTypes);
                     }
                 }
             }
@@ -95,6 +98,7 @@ public class GenerateJNIRuntimeAccess {
         private String name;
         private List<JNIClassField> fields;
         private List<JNIClassMethod> methods;
+        private List<JNIClassMethod> queriedMethods;
 
         public String getName() {
             return name;
@@ -118,6 +122,14 @@ public class GenerateJNIRuntimeAccess {
 
         public void setMethods(List<JNIClassMethod> methods) {
             this.methods = methods;
+        }
+
+        public List<JNIClassMethod> getQueriedMethods() {
+            return queriedMethods;
+        }
+
+        public void setQueriedMethods(List<JNIClassMethod> queriedMethods) {
+            this.queriedMethods = queriedMethods;
         }
     }
 
