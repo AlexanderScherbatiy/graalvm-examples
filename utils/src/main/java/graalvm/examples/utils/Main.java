@@ -30,6 +30,11 @@ public class Main {
                         " as the second argument");
                 FindCommonLines.findCommonLines(args[1], args[2]);
                 break;
+            case "FindTheSameLines":
+                checkArgument(args, 1, "Two file is not provided" +
+                        " as the second argument");
+                FindTheSameLines.findTheSameLines(args[1]);
+                break;
             default:
                 String msg = String.format("Command '%s' not found!", command);
                 throw new Exception(msg);
