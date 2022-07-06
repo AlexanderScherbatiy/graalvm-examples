@@ -39,12 +39,13 @@ public class FindNewLines {
     }
 
     private static Set<String> toSet(Path path) throws IOException {
-        Set<String> set = new HashSet<>();
+
+        final LineConcatenator concatenator = new LineConcatenator();
         try (Stream<String> stream = Files.lines(path)) {
             stream.forEach(line -> {
-                set.add(line.trim());
+                concatenator.add(line);
             });
         }
-        return set;
+        return concatenator.getLines();
     }
 }

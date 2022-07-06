@@ -35,6 +35,11 @@ public class Main {
                         " as the second argument");
                 FindTheSameLines.findTheSameLines(args[1]);
                 break;
+            case "FindNewLines":
+                checkArgument(args, 2, "Two files are not provided" +
+                        " as the second argument");
+                FindNewLines.findNewLines(args[1], args[2]);
+                break;
             default:
                 String msg = String.format("Command '%s' not found!", command);
                 throw new Exception(msg);
