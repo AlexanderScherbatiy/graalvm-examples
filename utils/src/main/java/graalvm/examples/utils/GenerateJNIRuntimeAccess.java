@@ -14,21 +14,21 @@ public class GenerateJNIRuntimeAccess {
     private static final String REGISTER_PREFIX =
             System.getProperty("generate.register.class", "JNIRuntimeAccess");
 
-    public static List<JNIClass> parse(String file) throws IOException {
+    public static List<AcessClass> parse(String file) throws IOException {
         return parse(new File(file));
     }
 
-    public static List<JNIClass> parse(File file) throws IOException {
+    public static List<AcessClass> parse(File file) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(file, new TypeReference<List<JNIClass>>() {
+        return objectMapper.readValue(file, new TypeReference<List<AcessClass>>() {
         });
     }
 
     public static void generateRuntimeAccess(String file) throws Exception {
 
-        List<GenerateJNIRuntimeAccess.JNIClass> jniClasses = GenerateJNIRuntimeAccess.parse(file);
+        List<AcessClass> jniClasses = GenerateJNIRuntimeAccess.parse(file);
         String prefix = REGISTER_PREFIX;
-        for (GenerateJNIRuntimeAccess.JNIClass jniClass : jniClasses) {
+        for (AcessClass jniClass : jniClasses) {
             dump("%s.register(%s);", prefix, convertClassName(jniClass.getName()));
             if (jniClass.getFields() != null) {
                 String fields = jniClass.getFields()
@@ -39,7 +39,7 @@ public class GenerateJNIRuntimeAccess {
             }
 
             if (jniClass.getMethods() != null) {
-                for (GenerateJNIRuntimeAccess.JNIClassMethod jniMethod : jniClass.getMethods()) {
+                for (AccessClassMethod jniMethod : jniClass.getMethods()) {
                     String parameterTypes = "";
                     if (jniMethod.getParameterTypes().size() > 0) {
                         parameterTypes = jniMethod.getParameterTypes()
@@ -93,12 +93,12 @@ public class GenerateJNIRuntimeAccess {
         System.out.println();
     }
 
-    public static class JNIClass {
+    public static class AcessClass {
 
         private String name;
-        private List<JNIClassField> fields;
-        private List<JNIClassMethod> methods;
-        private List<JNIClassMethod> queriedMethods;
+        private List<AccessClassField> fields;
+        private List<AccessClassMethod> methods;
+        private List<AccessClassMethod> queriedMethods;
 
         public String getName() {
             return name;
@@ -108,32 +108,32 @@ public class GenerateJNIRuntimeAccess {
             this.name = name;
         }
 
-        public List<JNIClassField> getFields() {
+        public List<AccessClassField> getFields() {
             return fields;
         }
 
-        public void setFields(List<JNIClassField> fields) {
+        public void setFields(List<AccessClassField> fields) {
             this.fields = fields;
         }
 
-        public List<JNIClassMethod> getMethods() {
+        public List<AccessClassMethod> getMethods() {
             return methods;
         }
 
-        public void setMethods(List<JNIClassMethod> methods) {
+        public void setMethods(List<AccessClassMethod> methods) {
             this.methods = methods;
         }
 
-        public List<JNIClassMethod> getQueriedMethods() {
+        public List<AccessClassMethod> getQueriedMethods() {
             return queriedMethods;
         }
 
-        public void setQueriedMethods(List<JNIClassMethod> queriedMethods) {
+        public void setQueriedMethods(List<AccessClassMethod> queriedMethods) {
             this.queriedMethods = queriedMethods;
         }
     }
 
-    public static class JNIClassField {
+    public static class AccessClassField {
 
         private String name;
 
@@ -146,7 +146,7 @@ public class GenerateJNIRuntimeAccess {
         }
     }
 
-    public static class JNIClassMethod {
+    public static class AccessClassMethod {
 
         private String name;
         private List<String> parameterTypes;
