@@ -20,6 +20,11 @@ public class Main {
                         " as the second argument");
                 GenerateJNIRuntimeAccess.generateRuntimeAccess(args[1]);
                 break;
+            case "GenerateRuntimeReflection":
+                checkArgument(args, 1, "JSON file is not provided" +
+                        " as the second argument");
+                GenerateRuntimeReflection.generateRuntimeReflection(args[1]);
+                break;
             case "UIClassIDConverter":
                 checkArgument(args, 1, "File with component UIs is not" +
                         " provided as the second argument");
