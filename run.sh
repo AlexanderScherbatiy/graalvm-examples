@@ -1,3 +1,4 @@
+#!/bin/bash
 set -e
 set -x
 
@@ -21,7 +22,18 @@ fi
 $GRAALVM/bin/javac $HEADERS -d ./$OUT ./*.java
 
 if [ "x$USE_JNI" == "xtrue" ]; then
-  gcc -g -shared -fPIC -I${GRAALVM}/include -I${GRAALVM}/include/linux -I./$OUT $APP.c -o ./$OUT/lib$APP.so
+  g++ -g -shared -fPIC -I${GRAALVM}/include -I${GRAALVM}/include/linux -I./$OUT $APP.c -o ./$OUT/lib$APP.so $JNI_OPTIONS
 fi
 
-$GRAALVM/bin/native-image -classpath $OUT $JAVA_LIB_PATH $OPTS $APP
+if [ "x$RUN_APP" == "xtrue" ]; then
+  $GRAALVM/bin/java -classpath $OUT $JAVA_LIB_PATH $OPTS $APP
+else
+  echo "Skip native image generation"
+fi
+
+if [ "x$NATIVE_IMAGE" == "xtrue" ]; then
+  $GRAALVM/bin/native-image -classpath $OUT $JAVA_LIB_PATH $OPTS $APP
+else
+  echo "Skip native image generation"
+fi
+
