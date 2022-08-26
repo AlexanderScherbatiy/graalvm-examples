@@ -14,6 +14,10 @@ if [ -z "$OUT" ]; then
   rm -rf ./$OUT *.png
 fi
 
+if [ -z "$NATIVE_APP" ]; then
+  NATIVE_APP=$APP
+fi
+
 if [ "x$USE_JNI" == "xtrue" ]; then
   HEADERS="-h ./$OUT"
   JAVA_LIB_PATH="-Djava.library.path=./$OUT"
@@ -22,7 +26,7 @@ fi
 $GRAALVM/bin/javac $HEADERS -d ./$OUT ./*.java
 
 if [ "x$USE_JNI" == "xtrue" ]; then
-  g++ -g -shared -fPIC -I${GRAALVM}/include -I${GRAALVM}/include/linux -I./$OUT $APP.c -o ./$OUT/lib$APP.so $JNI_OPTIONS
+  g++ -g -shared -fPIC -I${GRAALVM}/include -I${GRAALVM}/include/linux -I./$OUT $NATIVE_APP.c -o ./$OUT/lib$NATIVE_APP.so $JNI_OPTIONS
 fi
 
 if [ "x$RUN_APP" == "xtrue" ]; then
