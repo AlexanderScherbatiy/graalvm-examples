@@ -2,7 +2,7 @@
 
 ROOTDIR=$(dirname "$0")/..
 
-export APP=ReflectionExample
+export APP=JNIReflectionExample
 export NATIVE_APP=JNIExample
 export USE_JNI=true
 export RUN_APP=true
